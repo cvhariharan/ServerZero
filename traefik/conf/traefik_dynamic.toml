@@ -1,0 +1,10 @@
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "admin:$apr1$1eWF80.W$6W0ujTpaWr4tNKW3MfdJX1"
+  ]
+
+[http.routers.api]
+  rule = "Host(`home.trieoflogs.com`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"

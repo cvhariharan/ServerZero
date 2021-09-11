@@ -1,0 +1,6 @@
+.env
+dashy
+etc-*
+etebase
+postgres-data
+traefik/certs
