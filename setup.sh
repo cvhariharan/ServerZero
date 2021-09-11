@@ -1,1 +1,1 @@
-openssl req -key domain.key -new -x509 -days 365 -out domain.crt
+openssl req -key traefik/certs/example.key -new -x509 -days 365 -out traefik/certs/example.crt
