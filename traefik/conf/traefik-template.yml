@@ -45,8 +45,8 @@ entryPoints:
 
 tls:
   certificates:
-    - certFile: /certs/serverzero.local.crt
-      keyFile: /certs/serverzero.local.key
+    - certFile: /certs/DOMAIN_NAME.crt
+      keyFile: /certs/DOMAIN_NAME.key
 # when testing certs, enable this so traefik doesn't use 
 # it's own self signed. By default if it can't find a matching
 # cert, it'll just create it's own which will cause cert warnings

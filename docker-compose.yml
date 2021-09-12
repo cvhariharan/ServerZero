@@ -7,7 +7,6 @@ services:
       - web
       - internal
     volumes:
-      - './traefik/conf/acme.json:/acme.json'
       - './traefik/conf/traefik.yml:/traefik.yml'
       - '/var/run/docker.sock:/var/run/docker.sock'
       - './traefik/certs:/certs'
@@ -17,14 +16,13 @@ services:
       - 9000:8080
     restart: always
     dns:
-      - pihole
       - 1.1.1.1
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "5053:53/tcp"
+      - "5053:53/udp"
       - "8081:80/tcp"
     environment:
       TZ: 'Asia/Kolkata'
@@ -37,7 +35,7 @@ services:
       - NET_ADMIN
     restart: unless-stopped
     labels:
-      - traefik.http.routers.pihole.rule=Host(`pihole.localhost`)
+      - traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN_NAME}`)
       - traefik.http.routers.pihole.tls=true
       - traefik.enable=true
       - traefik.port=80
@@ -70,7 +68,7 @@ services:
     depends_on:
       - "postgres"
     labels:
-      - traefik.http.routers.nocodb.rule=Host(`nocodb.home.trieoflogs.com`)
+      - traefik.http.routers.nocodb.rule=Host(`nocodb.${DOMAIN_NAME}`)
       - traefik.http.routers.nocodb.tls=true
       - traefik.port=8080
       - traefik.enable=true
@@ -89,13 +87,13 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: ${POSTGRES_USER}
       APP_PORT: 22300
-      APP_BASE_URL: http://192.168.1.65:22300
+      APP_BASE_URL: joplin.${DOMAIN_NAME}
     ports:
       - "22300:22300"
     depends_on:
       - "postgres"
     labels:
-      - traefik.http.routers.joplin.rule=Host(`joplin.localhost`)
+      - traefik.http.routers.joplin.rule=Host(`joplin.${DOMAIN_NAME}`)
       - traefik.http.routers.joplin.tls=true
       - traefik.port=22300
       - traefik.enable=true
@@ -115,9 +113,8 @@ services:
     volumes:
       - './etebase:/data'
     labels:
-      - traefik.http.routers.etebase.rule=Host(`etebase.localhost`)
+      - traefik.http.routers.etebase.rule=Host(`etebase.${DOMAIN_NAME}`)
       - traefik.http.routers.etebase.tls=true
-      - traefik.http.routers.etebase.tls.certresolver=lets-encrypt
       - traefik.port=5000
       - traefik.enable=true
     restart: unless-stopped
@@ -134,9 +131,8 @@ services:
     volumes:
       - './dashy:/app/public'
     labels:
-      - traefik.http.routers.dashy.rule=Host(`dashy.localhost`)
+      - traefik.http.routers.dashy.rule=Host(`dashy.${DOMAIN_NAME}`)
       - traefik.http.routers.dashy.tls=true
-      - traefik.http.routers.dashy.tls.certresolver=lets-encrypt
       - traefik.port=80
       - traefik.enable=true
     networks:
