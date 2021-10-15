@@ -16,13 +16,14 @@ services:
       - 9000:8080
     restart: always
     dns:
+      - pihole
       - 1.1.1.1
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
     ports:
-      - "5053:53/tcp"
-      - "5053:53/udp"
+      - "53:53/tcp"
+      - "53:53/udp"
       - "8081:80/tcp"
     environment:
       TZ: 'Asia/Kolkata'
@@ -35,9 +36,9 @@ services:
       - NET_ADMIN
     restart: unless-stopped
     labels:
+      - traefik.enable=true
       - traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN_NAME}`)
       - traefik.http.routers.pihole.tls=true
-      - traefik.enable=true
       - traefik.port=80
     networks:
       - internal
@@ -68,10 +69,10 @@ services:
     depends_on:
       - "postgres"
     labels:
+      - traefik.enable=true
       - traefik.http.routers.nocodb.rule=Host(`nocodb.${DOMAIN_NAME}`)
       - traefik.http.routers.nocodb.tls=true
       - traefik.port=8080
-      - traefik.enable=true
     networks:
       - internal
       - web
@@ -93,10 +94,10 @@ services:
     depends_on:
       - "postgres"
     labels:
+      - traefik.enable=true
       - traefik.http.routers.joplin.rule=Host(`joplin.${DOMAIN_NAME}`)
       - traefik.http.routers.joplin.tls=true
       - traefik.port=22300
-      - traefik.enable=true
     restart: always
     networks:
       - internal
@@ -113,28 +114,11 @@ services:
     volumes:
       - './etebase:/data'
     labels:
+      - traefik.enable=true
       - traefik.http.routers.etebase.rule=Host(`etebase.${DOMAIN_NAME}`)
       - traefik.http.routers.etebase.tls=true
-      - traefik.port=5000
-      - traefik.enable=true
+      - traefik.http.services.etebase-service.loadbalancer.port=${APP_PORT} 
     restart: unless-stopped
-    networks:
-      - internal
-      - web
-
-  dashy:
-    container_name: dashy
-    image: lissy93/dashy
-    restart: unless-stopped
-    ports:
-      - "8085:80"
-    volumes:
-      - './dashy:/app/public'
-    labels:
-      - traefik.http.routers.dashy.rule=Host(`dashy.${DOMAIN_NAME}`)
-      - traefik.http.routers.dashy.tls=true
-      - traefik.port=80
-      - traefik.enable=true
     networks:
       - internal
       - web
