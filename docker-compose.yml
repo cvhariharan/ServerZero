@@ -60,6 +60,7 @@ services:
       - "5432:5432"
     volumes:
       - './postgres-data/:/var/lib/postgresql/data'
+      - './postgres-init:/docker-entrypoint-initdb.d'
     restart: always
     networks:
       - internal
@@ -68,7 +69,7 @@ services:
     container_name: nocodb
     image: nocodb/nocodb
     environment:
-      NC_DB: pg://postgres:5432?u=${POSTGRES_USER}&p=${POSTGRES_PASSWORD}&d=${POSTGRES_USER}
+      NC_DB: pg://postgres:5432?u=${POSTGRES_USER}&p=${POSTGRES_PASSWORD}&d=nocodb
     ports:
       - "8080:8080"
     restart: always
@@ -94,7 +95,7 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: ${POSTGRES_USER}
       APP_PORT: 22300
-      APP_BASE_URL: joplin.${DOMAIN_NAME}
+      APP_BASE_URL: https://joplin.${DOMAIN_NAME}
     ports:
       - "22300:22300"
     depends_on:
@@ -143,6 +144,29 @@ services:
       - traefik.port=5005
     restart: unless-stopped
     networks:
+      - web
+
+  miniflux:
+    container_name: miniflux
+    image: miniflux/miniflux:latest
+    environment: 
+      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/miniflux?sslmode=disable"
+      RUN_MIGRATIONS: "1"
+      CREATE_ADMIN: "1"
+      ADMIN_USERNAME: ${MIN_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${MIN_ADMIN_PASSWORD}
+    ports:
+      - "6000:8080"
+    depends_on:
+      - "postgres"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.miniflux.rule=Host(`miniflux.${DOMAIN_NAME}`)
+      - traefik.http.routers.miniflux.tls=true
+      - traefik.port=6000
+    restart: unless-stopped
+    networks:
+      - internal
       - web
 
 networks:
