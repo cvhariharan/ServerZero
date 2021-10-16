@@ -5,7 +5,6 @@ services:
     image: traefik:2.2
     networks:
       - web
-      - internal
     volumes:
       - './traefik/conf/traefik.yml:/traefik.yml'
       - '/var/run/docker.sock:/var/run/docker.sock'
@@ -24,6 +23,7 @@ services:
     dns:
       - pihole
       - 1.1.1.1
+  
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
