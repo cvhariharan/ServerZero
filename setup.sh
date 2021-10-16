@@ -1,3 +1,18 @@
+# Setup Firewall using UFW
+sudo apt update
+sudo apt install ufw
+sudo systemctl start ufw
+sudo systemctl enable ufw
+
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+
+sudo ufw allow from 192.168.1.0/24 to any port 22 proto tcp
+sudo ufw allow from 192.168.1.0/24 to any port 80 proto tcp
+sudo ufw allow from 192.168.1.0/24 to any port 443 proto tcp
+
+sudo ufw enable
+
 export $(grep -v '^#' .env | xargs)
 
 if sudo docker network ls | grep web -q
