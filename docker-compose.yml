@@ -14,6 +14,12 @@ services:
       - 80:80
       - 443:443
       - 9000:8080
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.monitoring.service=api@internal
+      - traefik.http.routers.monitoring.rule=Host(`monitoring.${DOMAIN_NAME}`)
+      - traefik.http.routers.monitoring.tls=true
+      - traefik.port=9000
     restart: always
     dns:
       - pihole
@@ -105,22 +111,38 @@ services:
   
   etebase:
     container_name: etebase
-    image: cvhariharan/etebase:v0.7.0-146-gd115040
+    image: cvhariharan/etebase:v0.7.0-147-g453869d 
     environment:
-      APP_PORT: ${APP_PORT}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:
-      - "5000:5000"
+      - "5000:3735"
     volumes:
       - './etebase:/data'
     labels:
       - traefik.enable=true
       - traefik.http.routers.etebase.rule=Host(`etebase.${DOMAIN_NAME}`)
       - traefik.http.routers.etebase.tls=true
-      - traefik.http.services.etebase-service.loadbalancer.port=${APP_PORT} 
+      - traefik.port=5000
+      # - traefik.http.services.etebase-service.loadbalancer.port=5000 
     restart: unless-stopped
     networks:
       - internal
+      - web
+  
+  flame:
+    container_name: flame
+    image: pawelmalak/flame:multiarch
+    volumes:
+      - './flame:/app/data'
+    ports:
+      - "5005:5005"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.flame.rule=Host(`flame.${DOMAIN_NAME}`)
+      - traefik.http.routers.flame.tls=true
+      - traefik.port=5005
+    restart: unless-stopped
+    networks:
       - web
 
 networks:
