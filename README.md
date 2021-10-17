@@ -29,5 +29,5 @@ This will create a docker network and certificates.
 docker-compose up -d
 ```
 
-Once all the services are started, you can navigate to Pi-hole and setup local dns. The format is {serviceName}.{domainNameFromEnv}. You can also navigate to Traefik dashboard at https://{piIPAddress}:9000 
+Once all the services are started, you can navigate to Pi-hole and setup local dns. The format is `{service-name}.{domain-name-from-env}`. You can also navigate to Traefik dashboard at `https://{raspi-ip}:9000`
 and get the domain names from there.
