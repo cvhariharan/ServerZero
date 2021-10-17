@@ -1,10 +1,10 @@
 export $(grep -v '^#' .env | xargs)
 
-if sudo docker network ls | grep web -q
+if docker network ls | grep web -q
 then
     echo "Docker network web created"
 else
-    sudo docker network create web
+    docker network create web
 fi
 
 if [[ -z "$DOMAIN_NAME" ]]; then
