@@ -64,7 +64,7 @@ services:
     restart: always
     networks:
       - internal
-    
+
   joplin-server:
     container_name: joplin-server
     image: cvhariharan/joplin-server:v2.4.5-4-g0a54854f5
@@ -90,28 +90,36 @@ services:
     networks:
       - internal
       - web
-  
+
   jellyfin:
+    image: linuxserver/jellyfin
+    devices:
+      - /dev/vchiq:/dev/vchiq
     container_name: jellyfin
-    image: jellyfin/jellyfin
-    user: 1000:1000
-    group_add:
-      - 122
-    volumes:
-      - './jellyfin/config:/config'
-      - './jellyfin/cache:/cache'
-      - './jellyfin/media:/media'
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Asia/Kolkata
+      UMASK_SET: "022"
+    ports:
+      - 8096:8096
     labels:
       - traefik.enable=true
-      - traefik.http.routers.etebase.rule=Host(`jellyfin.${DOMAIN_NAME}`)
-      - traefik.http.routers.etebase.tls=true
-      - traefik.port=5000
-    devices:
-      - /dev/vhciq:/dev/vchiq
-    restart: unless-stopped
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${DOMAIN_NAME}`)
+      - traefik.http.routers.jellyfin.tls=true
+      - traefik.port=8096
+    volumes:
+      - ./jellyfin/config:/config
+      - /home/userzero/Movies:/data/movies
+      - /home/userzero/TVShows:/data/tvshows
+      - /home/userzero/Music:/data/music
+      - /dev/shm:/config/data/transcoding-temp/transcodes
+      - /opt/vc/lib:/opt/vc/lib   
     networks:
       - internal
       - web
+    restart: always 
+
   etebase:
     container_name: etebase
     image: cvhariharan/etebase:v0.7.0-147-g453869d 
@@ -131,7 +139,7 @@ services:
     networks:
       - internal
       - web
-  
+
   flame:
     container_name: flame
     image: pawelmalak/flame:multiarch
@@ -170,7 +178,7 @@ services:
     networks:
       - internal
       - web
-  
+
   broker:
     image: redis:6.0
     restart: unless-stopped
