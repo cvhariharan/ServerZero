@@ -3,6 +3,7 @@ A minimal Raspberry Pi home server.
 
 ### Services
 - [Pi-hole](https://github.com/pi-hole/pi-hole)
+- [Jellyfin](https://github.com/linuxserver/docker-jellyfin)
 - [Joplin Server](https://github.com/cvhariharan/joplin-server)
 - [Etebase](https://github.com/cvhariharan/etebase)
 - [Flame dashboard](https://github.com/pawelmalak/flame)
