@@ -91,6 +91,27 @@ services:
       - internal
       - web
   
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
+    user: 1000:1000
+    group_add:
+      - 122
+    volumes:
+      - './jellyfin/config:/config'
+      - './jellyfin/cache:/cache'
+      - './jellyfin/media:/media'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.etebase.rule=Host(`jellyfin.${DOMAIN_NAME}`)
+      - traefik.http.routers.etebase.tls=true
+      - traefik.port=5000
+    devices:
+      - /dev/vhciq:/dev/vchiq
+    restart: unless-stopped
+    networks:
+      - internal
+      - web
   etebase:
     container_name: etebase
     image: cvhariharan/etebase:v0.7.0-147-g453869d 
