@@ -166,14 +166,14 @@ services:
       ADMIN_USERNAME: ${MIN_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${MIN_ADMIN_PASSWORD}
     ports:
-      - "6000:8080"
+      - "5551:8080"
     depends_on:
       - "postgres"
     labels:
       - traefik.enable=true
       - traefik.http.routers.miniflux.rule=Host(`miniflux.${DOMAIN_NAME}`)
       - traefik.http.routers.miniflux.tls=true
-      - traefik.port=6000
+      - traefik.port=5551
     restart: unless-stopped
     networks:
       - internal
