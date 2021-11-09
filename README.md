@@ -8,7 +8,6 @@ A minimal Raspberry Pi home server.
 - [Etebase](https://github.com/cvhariharan/etebase)
 - [Flame dashboard](https://github.com/pawelmalak/flame)
 - [Miniflux](https://github.com/miniflux/v2)
-- [Paperless-ng](https://github.com/jonaswinkler/paperless-ng)
 - [Postgres](https://github.com/postgres/postgres)
 - [Traefik](https://github.com/traefik/traefik)
 

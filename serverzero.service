@@ -1,0 +1,20 @@
+[Unit]
+Description=ServerZero
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+User=userzero
+Group=docker
+
+WorkingDirectory=/home/userzero
+
+ExecStartPre=/usr/bin/docker-compose -f /home/userzero/docker-compose.yml down -v
+
+ExecStart=/usr/bin/docker-compose -f /home/userzero/docker-compose.yml up
+
+ExecStop=/usr/bin/docker-compose -f /home/userzero/docker-compose.yml down -v
+
+[Install]
+WantedBy=multi-user.target
