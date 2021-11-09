@@ -180,6 +180,21 @@ services:
     networks:
       - internal
       - web
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN_NAME}`)
+      - traefik.http.routers.grafana.tls=true
+      - traefik.port=3000
+    restart: unless-stopped
+    networks:
+      - internal
+      - web
 
 networks:
   web:

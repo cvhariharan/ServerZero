@@ -9,6 +9,7 @@ A minimal Raspberry Pi home server.
 - [Flame dashboard](https://github.com/pawelmalak/flame)
 - [Miniflux](https://github.com/miniflux/v2)
 - [Postgres](https://github.com/postgres/postgres)
+- [Grafana](https://github.com/grafana/grafana)
 - [Traefik](https://github.com/traefik/traefik)
 
 ### Installation
