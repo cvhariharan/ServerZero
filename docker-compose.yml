@@ -4,6 +4,7 @@ services:
   traefik:
     image: traefik:2.2
     networks:
+      - internal
       - web
     volumes:
       - './traefik/conf/traefik.yml:/traefik.yml'
@@ -165,52 +166,21 @@ services:
       CREATE_ADMIN: "1"
       ADMIN_USERNAME: ${MIN_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${MIN_ADMIN_PASSWORD}
+      BASE_URL: "https://miniflux.${DOMAIN_NAME}"
     ports:
-      - "6000:8080"
+      - "5551:8080"
     depends_on:
       - "postgres"
     labels:
       - traefik.enable=true
       - traefik.http.routers.miniflux.rule=Host(`miniflux.${DOMAIN_NAME}`)
       - traefik.http.routers.miniflux.tls=true
-      - traefik.port=6000
+      - traefik.port=5551
     restart: unless-stopped
     networks:
       - internal
       - web
 
-  broker:
-    image: redis:6.0
-    restart: unless-stopped
-
-  paperless:
-    image: jonaswinkler/paperless-ng:latest
-    restart: unless-stopped
-    depends_on:
-      - postgres
-      - broker
-    ports:
-      - "8000:8000"
-    volumes:
-      - "./paperless-data:/usr/src/paperless/data"
-      - "./paperless-media:/usr/src/paperless/media"
-      - "./paperless-export:/usr/src/paperless/export"
-      - "./paperless-consume:/usr/src/paperless/consume"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.paperless.rule=Host(`paperless.${DOMAIN_NAME}`)
-      - traefik.http.routers.paperless.tls=true
-      - traefik.port=8000
-    env_file: paperless.conf.env
-    environment:
-      PAPERLESS_REDIS: redis://broker:6379
-      PAPERLESS_DBHOST: postgres
-      PAPERLESS_DBUSER: ${POSTGRES_USER}
-      PAPERLESS_DBPASS: ${POSTGRES_PASSWORD}
-      PAPERLESS_DBNAME: paperless
-    networks:
-      - internal
-      - web
 networks:
   web:
     external: true
