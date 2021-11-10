@@ -9,6 +9,7 @@ A minimal Raspberry Pi home server.
 - [Flame dashboard](https://github.com/pawelmalak/flame)
 - [Miniflux](https://github.com/miniflux/v2)
 - [Postgres](https://github.com/postgres/postgres)
+- [InfluxDB](https://github.com/influxdata/influxdb)
 - [Grafana](https://github.com/grafana/grafana)
 - [Traefik](https://github.com/traefik/traefik)
 
@@ -31,6 +32,12 @@ docker-compose up -d
 ```
 
 Once all the services are started, you can navigate to Pi-hole and setup local dns. The format is `{service-name}.{domain-name-from-env}`. You can also navigate to Traefik dashboard at `https://{raspi-ip}:9000`
-and get the domain names from there.
+and get the domain names from there.  
+
+A systemd unit file is also included.   
+
+### Setting up Telegraf and InfluxDB
+Before the InfluxDB container is created, modify the username and password in `create-telegraf.iql`. This will be used to initialize InfluxDB.  
+Use the newly created credentials to connect from Telegraf and Grafana.
 
 *Should work on Debian based systems. Tested only on the latest version of Raspberry Pi OS Lite* 
