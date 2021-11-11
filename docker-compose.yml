@@ -29,9 +29,9 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     ports:
+      - "8081:80/tcp"
       - "53:53/tcp"
       - "53:53/udp"
-      - "8081:80/tcp"
     environment:
       TZ: 'Asia/Kolkata'
       WEBPASSWORD: ${WEBPASSWORD}
@@ -44,9 +44,9 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN_NAME}`)
-      - traefik.http.routers.pihole.tls=true
-      - traefik.port=80
+      - traefik.http.routers.pihole.rule=Host(`pi.hole`)
+      - traefik.http.services.pihole.loadbalancer.server.port=8081
+      # - traefik.port=8081
     networks:
       - internal
       - web
@@ -160,6 +160,8 @@ services:
   flame:
     container_name: flame
     image: pawelmalak/flame:multiarch
+    environment:
+      TZ: 'Asia/Kolkata'
     volumes:
       - './flame:/app/data'
     ports:
