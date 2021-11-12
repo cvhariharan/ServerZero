@@ -10,6 +10,7 @@ services:
       - './traefik/conf/traefik.yml:/traefik.yml'
       - '/var/run/docker.sock:/var/run/docker.sock'
       - './traefik/certs:/certs'
+      - './traefik/acme.json:/acme.json'
     environment:
       CF_API_EMAIL: ${CLOUDFLARE_EMAIL}
       CF_DNS_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
