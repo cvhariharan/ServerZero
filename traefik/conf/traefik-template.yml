@@ -40,18 +40,28 @@ entryPoints:
   websecure:
     address: :443
 
-
+certificatesResolvers:
+  letsEncrypt:
+    acme:
+      email: CLOUDFLARE_EMAIL
+      storage: acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.2:53"
+        # used during the challenge
 ## DYNAMIC CONFIG
 
-tls:
-  certificates:
-    - certFile: /certs/DOMAIN_NAME.crt
-      keyFile: /certs/DOMAIN_NAME.key
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /certs/DOMAIN_NAME.crt
-        keyFile: /certs/DOMAIN_NAME.key
+# tls:
+#   certificates:
+#     - certFile: /certs/DOMAIN_NAME.crt
+#       keyFile: /certs/DOMAIN_NAME.key
+#   stores:
+#     default:
+#       defaultCertificate:
+#         certFile: /certs/DOMAIN_NAME.crt
+#         keyFile: /certs/DOMAIN_NAME.key
 # when testing certs, enable this so traefik doesn't use 
 # it's own self signed. By default if it can't find a matching
 # cert, it'll just create it's own which will cause cert warnings
