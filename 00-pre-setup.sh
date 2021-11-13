@@ -36,6 +36,7 @@ sudo chown userzero /home/userzero
 
 
 sudo chown userzero /home/userzero/* /home/userzero/.env /home/userzero/traefik/conf/* /home/userzero/traefik/*
+sudo chmod 600 /home/userzero/traefik/acme.json
 
 sudo usermod -aG ssh,docker userzero
 
