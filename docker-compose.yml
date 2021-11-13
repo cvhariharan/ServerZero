@@ -55,6 +55,26 @@ services:
     networks:
       - internal
       - web
+  
+  gotify:
+    container_name: gotify
+    image: gotify/server-arm64:2.1.0
+    environment:
+      TZ: "Asia/Kolkata"
+    ports:
+      - "8070:80"
+    volumes:
+      - './gotify:/app/data'
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gotify.rule=Host(`gotify.${DOMAIN_NAME}`)
+      - traefik.http.routers.gotify.tls=true
+      - traefik.port=8070
+      - traefik.http.routers.gotify.tls.certresolver=letsEncrypt
+    networks: 
+      - internal
+      - web
 
   postgres:
     container_name: postgres
