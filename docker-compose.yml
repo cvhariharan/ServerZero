@@ -307,9 +307,10 @@ services:
   
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:8.2.0
     ports:
       - 3000:3000
+    user: "$UID:$GID"
     volumes:
       - './grafana/data:/var/lib/grafana'
     labels:
