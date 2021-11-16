@@ -123,6 +123,36 @@ services:
     networks:
       - internal
 
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    networks:
+      - internal
+
+  send:
+    container_name: send
+    image: cvhariharan/send:v3.4.14-2-g3c42de0e
+    environment:
+      BASE_URL: "https://send.${DOMAIN_NAME}"
+      REDIS_HOST: redis
+      MAX_FILES_PER_ARCHIVE: 256
+      MAX_FILE_SIZE: 5368709120
+    volumes:
+      - './send/uploads:/uploads'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.send.rule=Host(`send.${DOMAIN_NAME}`)
+      - traefik.http.routers.send.tls=true
+      - traefik.http.routers.send.tls.certresolver=letsEncrypt
+      - traefik.http.services.send.loadbalancer.server.port=1443
+    ports:
+      - "1443:1443"
+    networks:
+      - internal
+      - web
+
+
   gitea:
     container_name: gitea
     image: gitea/gitea:1.15.6
