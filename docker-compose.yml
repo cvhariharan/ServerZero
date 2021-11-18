@@ -210,6 +210,24 @@ services:
       - internal
       - web
 
+  metube:
+    container_name: metube
+    image: alexta69/metube
+    user: "1001:1001"
+    ports:
+      - "8090:8081"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.metube.rule=Host(`videos.${DOMAIN_NAME}`)
+      - traefik.http.routers.metube.tls=true
+      - traefik.http.services.metube.loadbalancer.server.port=8081
+      - traefik.http.routers.metube.tls.certresolver=letsEncrypt
+    volumes:
+      - ./Videos:/downloads
+    restart: unless-stopped
+    networks:
+      - web
+
   jellyfin:
     image: linuxserver/jellyfin
     devices:
@@ -233,6 +251,7 @@ services:
       - /home/userzero/Movies:/data/movies
       - /home/userzero/TVShows:/data/tvshows
       - /home/userzero/Music:/data/music
+      - /home/userzero/Videos:/data/videos
       - /dev/shm:/config/data/transcoding-temp/transcodes
       - /opt/vc/lib:/opt/vc/lib   
     networks:
