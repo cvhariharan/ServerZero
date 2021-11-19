@@ -234,8 +234,8 @@ services:
       - /dev/vchiq:/dev/vchiq
     container_name: jellyfin
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: 1001
+      PGID: 1001
       TZ: Asia/Kolkata
       UMASK_SET: "022"
     ports:
