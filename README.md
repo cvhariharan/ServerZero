@@ -9,6 +9,7 @@ A minimal Raspberry Pi home server.
 - [Joplin Server](https://github.com/cvhariharan/joplin-server)
 - [Etebase](https://github.com/cvhariharan/etebase)
 - [Flame dashboard](https://github.com/pawelmalak/flame)
+- [Metube](https://github.com/alexta69/metube)
 - [Gotify](https://github.com/gotify/server)
 - [Miniflux](https://github.com/miniflux/v2)
 - [Postgres](https://github.com/postgres/postgres)
