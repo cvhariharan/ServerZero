@@ -123,6 +123,52 @@ services:
     networks:
       - internal
 
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    environment:
+      PUID: 1000
+      PGID: 1000
+      APP_URL: "https://wiki.${DOMAIN_NAME}"
+      TZ: Asia/Kolkata
+      DB_HOST: bookstack_db
+      DB_USER: bookstack
+      DB_PASS: ${POSTGRES_PASSWORD}
+      DB_DATABASE: bookstackapp
+    volumes:
+      - ./bookstack:/config
+    ports:
+      - 6875:80
+    depends_on:
+      - bookstack_db
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bookstack.rule=Host(`wiki.${DOMAIN_NAME}`)
+      - traefik.http.routers.bookstack.tls=true
+      - traefik.http.routers.bookstack.tls.certresolver=letsEncrypt
+      - traefik.http.services.bookstack.loadbalancer.server.port=80
+    restart: unless-stopped
+    networks:
+      - internal
+      - web
+
+  bookstack_db:
+    image: lscr.io/linuxserver/mariadb
+    container_name: bookstack_db
+    environment:
+      PUID: 1000
+      PGID: 1000
+      MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: Asia/Kolkata
+      MYSQL_DATABASE: bookstackapp
+      MYSQL_USER: bookstack
+      MYSQL_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./bookstack-database:/config
+    restart: unless-stopped
+    networks:
+      - internal
+
   redis:
     container_name: redis
     image: redis

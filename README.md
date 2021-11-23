@@ -2,6 +2,7 @@
 A minimal Raspberry Pi home server.
 
 ### Services
+- [Bookstack](https://github.com/BookStackApp/BookStack)
 - [Pi-hole](https://github.com/pi-hole/pi-hole)
 - [Gitea](https://github.com/go-gitea/gitea)
 - [Send](https://github.com/timvisee/send)
