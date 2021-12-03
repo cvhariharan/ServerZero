@@ -391,6 +391,34 @@ services:
       - internal
       - web
 
+  qbittorrent:
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - WEBUI_PORT=8080
+    volumes:
+      - "./qbittorrent/config:/config"
+      - "./Downloads:/downloads"
+      - "./Movies:/movies"
+      - "./Music:/music"
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+      - 8055:8080
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qb.rule=Host(`qb.${DOMAIN_NAME}`)
+      - traefik.http.routers.qb.tls=true
+      - traefik.http.services.qb.loadbalancer.server.port=8080
+      - traefik.http.routers.qb.tls.certresolver=letsEncrypt
+    networks:
+      - internal
+      - web
+    restart: unless-stopped
+
 networks:
   web:
     external: true
