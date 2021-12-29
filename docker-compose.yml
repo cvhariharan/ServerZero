@@ -58,7 +58,7 @@ services:
   
   gotify:
     container_name: gotify
-    image: gotify/server-arm64:2.1.0
+    image: gotify/server-arm64:latest
     environment:
       TZ: "Asia/Kolkata"
     ports:
@@ -124,7 +124,7 @@ services:
       - internal
 
   bookstack:
-    image: lscr.io/linuxserver/bookstack
+    image: lscr.io/linuxserver/bookstack:latest
     container_name: bookstack
     environment:
       PUID: 1000
@@ -203,7 +203,7 @@ services:
 
   gitea:
     container_name: gitea
-    image: gitea/gitea:1.15.6
+    image: gitea/gitea:latest
     environment:
       USER_UID: 1000
       USER_GID: 1000
