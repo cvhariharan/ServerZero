@@ -330,7 +330,7 @@ services:
 
   flame:
     container_name: flame
-    image: pawelmalak/flame:multiarch
+    image: pawelmalak/flame:multiarch1.7.4
     environment:
       TZ: 'Asia/Kolkata'
     volumes:
