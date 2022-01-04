@@ -418,6 +418,27 @@ services:
       - internal
       - web
     restart: unless-stopped
+  
+  linkding:
+    container_name: linkding
+    image: sissbruecker/linkding:latest
+    ports:
+      - "9966:9090"
+    volumes:
+      - "./linkding/data:/etc/linkding/data"
+    environment:
+      - LD_DISABLE_BACKGROUND_TASKS=False
+      - LD_DISABLE_URL_VALIDATION=False
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.linkding.rule=Host(`links.${DOMAIN_NAME}`)
+      - traefik.http.routers.linkding.tls=true
+      - traefik.http.services.linkding.loadbalancer.server.port=9090
+      - traefik.http.routers.linkding.tls.certresolver=letsEncrypt
+    networks:
+      - internal
+      - web
+    restart: unless-stopped
 
 networks:
   web:
