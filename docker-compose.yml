@@ -24,7 +24,7 @@ services:
       - traefik.http.routers.monitoring.rule=Host(`monitoring.${DOMAIN_NAME}`)
       - traefik.http.routers.monitoring.tls=true
       - traefik.http.routers.monitoring.tls.certresolver=letsEncrypt
-      - traefik.port=9000
+      - traefik.http.services.monitoring.loadbalancer.server.port=8080
     restart: always
     dns:
       - pihole
@@ -61,8 +61,6 @@ services:
     image: gotify/server-arm64:latest
     environment:
       TZ: "Asia/Kolkata"
-    ports:
-      - "8070:80"
     volumes:
       - './gotify:/app/data'
     restart: always
@@ -70,7 +68,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.gotify.rule=Host(`gotify.${DOMAIN_NAME}`)
       - traefik.http.routers.gotify.tls=true
-      - traefik.port=8070
+      - traefik.http.services.gotify.loadbalancer.server.port=80
       - traefik.http.routers.gotify.tls.certresolver=letsEncrypt
     networks: 
       - internal
@@ -82,8 +80,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
-    ports:
-      - "5432:5432"
     volumes:
       - './postgres-data/:/var/lib/postgresql/data'
       - './postgres-init:/docker-entrypoint-initdb.d'
@@ -99,8 +95,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: gitea
-    ports:
-      - "5431:5432"
     volumes:
       - './gitea-database/:/var/lib/postgresql/data'
     restart: always
@@ -113,8 +107,6 @@ services:
     environment:
       INFLUXDB_ADMIN_USER: "${INFLUXDB_USERNAME}"
       INFLUXDB_ADMIN_PASSWORD: "${INFLUXDB_PASSWORD}"
-    ports:
-      - 8086:8086
     volumes:
       - './influxdb/data:/var/lib/influxdb2'
       - './influxdb/config:/etc/influxdb2'
@@ -137,8 +129,6 @@ services:
       DB_DATABASE: bookstackapp
     volumes:
       - ./bookstack:/config
-    ports:
-      - 6875:80
     depends_on:
       - bookstack_db
     labels:
@@ -192,8 +182,6 @@ services:
       - traefik.http.routers.send.tls=true
       - traefik.http.routers.send.tls.certresolver=letsEncrypt
       - traefik.http.services.send.loadbalancer.server.port=1443
-    ports:
-      - "1443:1443"
     depends_on:
       - redis
     networks:
@@ -223,37 +211,8 @@ services:
       - traefik.http.routers.gitea.tls.certresolver=letsEncrypt
       - traefik.http.services.gitea.loadbalancer.server.port=3000
     ports:
-      - "3005:3000"
       - "2222:22"
     restart: unless-stopped
-    networks:
-      - internal
-      - web
-
-
-  joplin-server:
-    container_name: joplin-server
-    image: cvhariharan/joplin-server:v2.4.5-4-g0a54854f5
-    environment:
-      DB_CLIENT: pg
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DATABASE: ${POSTGRES_USER}
-      APP_PORT: 22300
-      APP_BASE_URL: https://joplin.${DOMAIN_NAME}
-    ports:
-      - "22300:22300"
-    depends_on:
-      - "postgres"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.joplin.rule=Host(`joplin.${DOMAIN_NAME}`)
-      - traefik.http.routers.joplin.tls=true
-      - traefik.port=22300
-      - traefik.http.routers.joplin.tls.certresolver=letsEncrypt
-    restart: always
     networks:
       - internal
       - web
@@ -262,8 +221,6 @@ services:
     container_name: metube
     image: alexta69/metube
     user: "1001:1001"
-    ports:
-      - "8090:8081"
     labels:
       - traefik.enable=true
       - traefik.http.routers.metube.rule=Host(`videos.${DOMAIN_NAME}`)
@@ -286,14 +243,12 @@ services:
       PGID: 1001
       TZ: Asia/Kolkata
       UMASK_SET: "022"
-    ports:
-      - 8096:8096
     labels:
       - traefik.enable=true
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${DOMAIN_NAME}`)
       - traefik.http.routers.jellyfin.tls=true
       - traefik.http.routers.jellyfin.tls.certresolver=letsEncrypt
-      - traefik.port=8096
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
     volumes:
       - ./jellyfin/config:/config
       - /home/userzero/Movies:/data/movies
@@ -312,8 +267,6 @@ services:
     image: cvhariharan/etebase:v0.7.0-147-g453869d 
     environment:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-    ports:
-      - "5000:3735"
     volumes:
       - './etebase:/data'
     labels:
@@ -321,8 +274,7 @@ services:
       - traefik.http.routers.etebase.rule=Host(`etebase.${DOMAIN_NAME}`)
       - traefik.http.routers.etebase.tls=true
       - traefik.http.routers.etebase.tls.certresolver=letsEncrypt
-      - traefik.port=5000
-      # - traefik.http.services.etebase-service.loadbalancer.port=5000 
+      - traefik.http.services.etebase.loadbalancer.server.port=3735
     restart: unless-stopped
     networks:
       - internal
@@ -335,14 +287,12 @@ services:
       TZ: 'Asia/Kolkata'
     volumes:
       - './flame:/app/data'
-    ports:
-      - "5005:5005"
     labels:
       - traefik.enable=true
       - traefik.http.routers.flame.rule=Host(`flame.${DOMAIN_NAME}`)
       - traefik.http.routers.flame.tls=true
       - traefik.http.routers.flame.tls.certresolver=letsEncrypt
-      - traefik.port=5005
+      - traefik.http.services.flame.loadbalancer.server.port=5005
     restart: unless-stopped
     networks:
       - web
@@ -357,8 +307,6 @@ services:
       ADMIN_USERNAME: ${MIN_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${MIN_ADMIN_PASSWORD}
       BASE_URL: "https://miniflux.${DOMAIN_NAME}"
-    ports:
-      - "5551:8080"
     depends_on:
       - "postgres"
     labels:
@@ -366,7 +314,7 @@ services:
       - traefik.http.routers.miniflux.rule=Host(`miniflux.${DOMAIN_NAME}`)
       - traefik.http.routers.miniflux.tls=true
       - traefik.http.routers.miniflux.tls.certresolver=letsEncrypt
-      - traefik.port=5551
+      - traefik.http.services.miniflux.loadbalancer.server.port=8080
     restart: unless-stopped
     networks:
       - internal
@@ -375,8 +323,6 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:8.2.0
-    ports:
-      - 3000:3000
     user: "$UID:$GID"
     volumes:
       - './grafana/data:/var/lib/grafana'
@@ -385,7 +331,7 @@ services:
       - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN_NAME}`)
       - traefik.http.routers.grafana.tls=true
       - traefik.http.routers.grafana.tls.certresolver=letsEncrypt
-      - traefik.port=3000
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
     restart: unless-stopped
     networks:
       - internal
@@ -404,10 +350,6 @@ services:
       - "./Downloads:/downloads"
       - "./Movies:/movies"
       - "./Music:/music"
-    ports:
-      - 6881:6881
-      - 6881:6881/udp
-      - 8055:8080
     labels:
       - traefik.enable=true
       - traefik.http.routers.qb.rule=Host(`qb.${DOMAIN_NAME}`)
@@ -419,26 +361,6 @@ services:
       - web
     restart: unless-stopped
   
-  linkding:
-    container_name: linkding
-    image: sissbruecker/linkding:latest
-    ports:
-      - "9966:9090"
-    volumes:
-      - "./linkding/data:/etc/linkding/data"
-    environment:
-      - LD_DISABLE_BACKGROUND_TASKS=False
-      - LD_DISABLE_URL_VALIDATION=False
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.linkding.rule=Host(`links.${DOMAIN_NAME}`)
-      - traefik.http.routers.linkding.tls=true
-      - traefik.http.services.linkding.loadbalancer.server.port=9090
-      - traefik.http.routers.linkding.tls.certresolver=letsEncrypt
-    networks:
-      - internal
-      - web
-    restart: unless-stopped
 
   nextclouddb:
     container_name: ncdb
@@ -447,8 +369,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: nextcloud
-    ports:
-      - "5430:5432"
     volumes:
       - './nc-database/:/var/lib/postgresql/data'
     restart: always
