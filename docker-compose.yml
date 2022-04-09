@@ -25,6 +25,7 @@ services:
       - traefik.http.routers.monitoring.tls=true
       - traefik.http.routers.monitoring.tls.certresolver=letsEncrypt
       - traefik.http.services.monitoring.loadbalancer.server.port=8080
+      - traefik.http.routers.monitoring.middlewares=home-whitelist@file
     restart: always
     dns:
       - pihole
@@ -70,7 +71,8 @@ services:
       - traefik.http.routers.gotify.tls=true
       - traefik.http.services.gotify.loadbalancer.server.port=80
       - traefik.http.routers.gotify.tls.certresolver=letsEncrypt
-    networks: 
+      - traefik.http.routers.gotify.middlewares=home-whitelist@file
+    networks:
       - internal
       - web
 
@@ -137,6 +139,7 @@ services:
       - traefik.http.routers.bookstack.tls=true
       - traefik.http.routers.bookstack.tls.certresolver=letsEncrypt
       - traefik.http.services.bookstack.loadbalancer.server.port=80
+      - traefik.http.routers.bookstack.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - internal
@@ -182,6 +185,7 @@ services:
       - traefik.http.routers.send.tls=true
       - traefik.http.routers.send.tls.certresolver=letsEncrypt
       - traefik.http.services.send.loadbalancer.server.port=1443
+      - traefik.http.routers.send.middlewares=home-whitelist@file
     depends_on:
       - redis
     networks:
@@ -210,6 +214,7 @@ services:
       - traefik.http.routers.gitea.tls=true
       - traefik.http.routers.gitea.tls.certresolver=letsEncrypt
       - traefik.http.services.gitea.loadbalancer.server.port=3000
+      - traefik.http.routers.gitea.middlewares=home-whitelist@file
     ports:
       - "2222:22"
     restart: unless-stopped
@@ -227,6 +232,7 @@ services:
       - traefik.http.routers.metube.tls=true
       - traefik.http.services.metube.loadbalancer.server.port=8081
       - traefik.http.routers.metube.tls.certresolver=letsEncrypt
+      - traefik.http.routers.metube.middlewares=home-whitelist@file
     volumes:
       - ./Videos:/downloads
     restart: unless-stopped
@@ -249,6 +255,7 @@ services:
       - traefik.http.routers.jellyfin.tls=true
       - traefik.http.routers.jellyfin.tls.certresolver=letsEncrypt
       - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+      - traefik.http.routers.jellyfin.middlewares=home-whitelist@file
     volumes:
       - ./jellyfin/config:/config
       - /home/userzero/Movies:/data/movies
@@ -275,6 +282,7 @@ services:
       - traefik.http.routers.etebase.tls=true
       - traefik.http.routers.etebase.tls.certresolver=letsEncrypt
       - traefik.http.services.etebase.loadbalancer.server.port=3735
+      - traefik.http.routers.etebase.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - internal
@@ -293,6 +301,7 @@ services:
       - traefik.http.routers.flame.tls=true
       - traefik.http.routers.flame.tls.certresolver=letsEncrypt
       - traefik.http.services.flame.loadbalancer.server.port=5005
+      - traefik.http.routers.flame.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - web
@@ -315,6 +324,7 @@ services:
       - traefik.http.routers.miniflux.tls=true
       - traefik.http.routers.miniflux.tls.certresolver=letsEncrypt
       - traefik.http.services.miniflux.loadbalancer.server.port=8080
+      - traefik.http.routers.miniflux.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - internal
@@ -332,6 +342,7 @@ services:
       - traefik.http.routers.grafana.tls=true
       - traefik.http.routers.grafana.tls.certresolver=letsEncrypt
       - traefik.http.services.grafana.loadbalancer.server.port=3000
+      - traefik.http.routers.grafana.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - internal
@@ -356,6 +367,7 @@ services:
       - traefik.http.routers.qb.tls=true
       - traefik.http.services.qb.loadbalancer.server.port=8080
       - traefik.http.routers.qb.tls.certresolver=letsEncrypt
+      - traefik.http.routers.qb.middlewares=home-whitelist@file
     networks:
       - internal
       - web
@@ -393,6 +405,7 @@ services:
       - traefik.http.routers.nc.tls=true
       - traefik.http.routers.nc.tls.certresolver=letsEncrypt
       - traefik.http.services.nc.loadbalancer.server.port=80
+      - traefik.http.routers.nc.middlewares=home-whitelist@file
     restart: unless-stopped
     networks:
       - internal

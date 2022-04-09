@@ -27,6 +27,14 @@ providers:
     fileName: /traefik.yml
     watch: true
 
+http:
+  middlewares:
+    home-whitelist:
+      ipWhiteList:
+        sourceRange:
+          - "127.0.0.1/32"
+          - "192.168.1.0/24"
+
 # listen on 80/443, and redirect all 80 to 443 via 301
 entryPoints:
   web:
