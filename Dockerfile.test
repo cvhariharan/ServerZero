@@ -1,0 +1,23 @@
+FROM debian:stable
+
+ARG USER_ARG
+ARG PASS_ARG
+ENV USER=${USER_ARG}
+ENV PASS=${PASS_ARG}
+
+ENV DEBAIN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install openssh-server sudo -y
+
+RUN apt install python3 -y
+
+RUN useradd -m -s /bin/bash ${USER}
+RUN usermod -aG sudo ${USER}
+RUN echo "$USER:$PASS" | chpasswd
+
+COPY --chown=${USER} --chmod=600 ./ansible-test.pub /home/${USER}/.ssh/authorized_keys
+
+RUN /etc/init.d/ssh start
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

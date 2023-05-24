@@ -1,0 +1,43 @@
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: Update Package Manager Cache (APT)
+      ansible.builtin.apt:
+        update_cache: true
+    
+    - name: Upgrade (APT)
+      ansible.builtin.apt:
+        upgrade: yes
+
+    - name: Install UFW and OpenSSL
+      ansible.builtin.apt:
+        pkg:
+          - ufw
+          - openssl
+
+    - name: Enable UFW
+      ansible.builtin.systemd:
+        name: ufw
+        enabled: true
+        state: started
+      when: lookup('env', "TEST_PLAYBOOK") == ""
+
+    # Only for docker tests
+    - name: Enable UFW
+      ansible.builtin.sysvinit:
+        name: ufw
+        enabled: true
+        state: started
+      when: lookup('env', "TEST_PLAYBOOK") == "True"
+    
+    # Skip for docker
+    - name: Setup UFW
+      become: yes
+      ansible.builtin.shell: |
+        ufw default allow outgoing 
+        ufw default deny incoming
+        ufw allow from 192.168.1.0/24 to any port 22 proto tcp
+        ufw allow from 192.168.1.0/24 to any port 80 proto tcp
+        ufw allow from 192.168.1.0/24 to any port 443 proto tcp
+        ufw enable
+      when: lookup('env', "TEST_PLAYBOOK") == ""
